@@ -1,3 +1,3 @@
 ## elm-composable-validation
 
-TODO readme
+A collections of utilities for type-safe validation.

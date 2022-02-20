@@ -1,6 +1,6 @@
 module Validation.Number exposing (min, max)
 
-{-|
+{-| Validations over the `number` type
 
 
 ## Predicates
