@@ -134,7 +134,7 @@ maybeValidationsTest =
         [ Test.describe "lift"
             [ Test.test "validates just" <|
                 \() ->
-                    Just " abc_ "
+                    Just " abc "
                         |> Validation.run (Validation.Maybe.lift Validation.String.trim)
                         |> Expect.equal (Ok (Just "abc"))
             , Test.test "validates Nothiing" <|
