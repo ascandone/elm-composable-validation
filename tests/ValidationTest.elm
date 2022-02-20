@@ -21,8 +21,8 @@ type alias Parsed =
     }
 
 
-suite : Test
-suite =
+validationTests : Test
+validationTests =
     Test.concat
         [ let
             validation =
@@ -94,6 +94,24 @@ suite =
                         |> Validation.run validation
                         |> Expect.equal (Err "y")
             ]
+        ]
+
+
+stringValidationTests : Test
+stringValidationTests =
+    Test.describe "Validation.Test.*"
+        [ Test.describe "optional"
+            [ Test.test "validates just" <|
+                \() ->
+                    Just " abc "
+                        |> Validation.run (Validation.Maybe.lift Validation.String.trim)
+                        |> Expect.equal (Ok (Just "abc"))
+            , Test.test "validates Nothiing" <|
+                \() ->
+                    Nothing
+                        |> Validation.run (Validation.Maybe.lift (Validation.fail "fail"))
+                        |> Expect.equal (Ok Nothing)
+            ]
         , Test.describe "Validation.String.toInt"
             [ Test.fuzz Fuzz.int "Should parse number" <|
                 \n ->
@@ -107,10 +125,16 @@ suite =
                         |> Validation.run (Validation.String.toInt errorMessage)
                         |> Expect.equal (Err errorMessage)
             ]
-        , Test.describe "Validation.Maybe.lift"
+        ]
+
+
+maybeValidationsTest : Test
+maybeValidationsTest =
+    Test.describe "Validation.Maybe.*"
+        [ Test.describe "lift"
             [ Test.test "validates just" <|
                 \() ->
-                    Just " abc "
+                    Just " abc_ "
                         |> Validation.run (Validation.Maybe.lift Validation.String.trim)
                         |> Expect.equal (Ok (Just "abc"))
             , Test.test "validates Nothiing" <|
