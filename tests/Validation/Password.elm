@@ -30,10 +30,9 @@ fromString raw =
 
 
 confirmPasswordValidation : Maybe Password -> Maybe (Validation Password Password)
-confirmPasswordValidation mpw =
+confirmPasswordValidation =
     Maybe.map
         (\pw -> Validation.filter ((==) pw) "Passwords do not match")
-        mpw
 
 
 toString : Password -> String
