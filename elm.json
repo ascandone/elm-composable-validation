@@ -7,7 +7,7 @@
     "exposed-modules": [
         "Validation",
         "Validation.String",
-        "Validation.Int"
+        "Validation.Number"
     ],
     "source-directories": [
         "src"

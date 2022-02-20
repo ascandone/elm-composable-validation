@@ -4,7 +4,8 @@ import Expect
 import Fuzz
 import Test exposing (Test)
 import Validation
-import Validation.Int
+import Validation.Maybe
+import Validation.Number
 import Validation.String
 
 
@@ -28,8 +29,8 @@ suite =
                 Validation.String.notEmpty "Required field"
                     >> Validation.String.trim
                     >> Validation.String.toInt "Expected an int"
-                    >> Validation.Int.min 0 "Expected a positive int"
-                    >> Validation.Int.max 100 "Expected a number <= 100"
+                    >> Validation.Number.min 0 "Expected a positive int"
+                    >> Validation.Number.max 100 "Expected a number <= 100"
           in
           Test.describe "Composition"
             [ Test.fuzz (Fuzz.intRange 0 100) "succeed" <|
@@ -67,8 +68,8 @@ suite =
         , let
             validation =
                 Validation.succeed Parsed
-                    |> Validation.field .x (Validation.String.toInt "x")
-                    |> Validation.field .y (Validation.String.toInt "y")
+                    |> Validation.andMapWith .x (Validation.String.toInt "x")
+                    |> Validation.andMapWith .y (Validation.String.toInt "y")
           in
           Test.describe "Validation.field"
             [ Test.fuzz2 Fuzz.int Fuzz.int "Both succeed" <|
@@ -105,5 +106,17 @@ suite =
                     (str ++ "nan")
                         |> Validation.run (Validation.String.toInt errorMessage)
                         |> Expect.equal (Err errorMessage)
+            ]
+        , Test.describe "Validation.Maybe.lift"
+            [ Test.test "validates just" <|
+                \() ->
+                    Just " abc "
+                        |> Validation.run (Validation.Maybe.lift Validation.String.trim)
+                        |> Expect.equal (Ok (Just "abc"))
+            , Test.test "validates Nothiing" <|
+                \() ->
+                    Nothing
+                        |> Validation.run (Validation.Maybe.lift (Validation.fail "fail"))
+                        |> Expect.equal (Ok Nothing)
             ]
         ]

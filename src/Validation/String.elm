@@ -1,6 +1,6 @@
 module Validation.String exposing
     ( any, notEmpty, minLength, maxLength
-    , toInt, trim
+    , toInt, toFloat, trim
     , optional
     )
 
@@ -14,7 +14,7 @@ module Validation.String exposing
 
 ## Transformations
 
-@docs toInt, trim
+@docs toInt, toFloat, trim
 
 
 ## Higher order validations
@@ -24,12 +24,19 @@ module Validation.String exposing
 -}
 
 import Validation exposing (Validation)
+import Validation.Maybe
 
 
 {-| -}
 toInt : String -> Validation String Int
 toInt =
     Validation.fromPartialFunction String.toInt
+
+
+{-| -}
+toFloat : String -> Validation String Float
+toFloat =
+    Validation.fromPartialFunction String.toFloat
 
 
 {-| -}
@@ -65,7 +72,7 @@ trim =
 {-| -}
 optional : Validation String to -> Validation String (Maybe to)
 optional validation =
-    Result.map stringToMaybe >> Validation.optional validation
+    Result.map stringToMaybe >> Validation.Maybe.lift validation
 
 
 {-| -}
