@@ -99,20 +99,29 @@ validationTests =
 
 stringValidationTests : Test
 stringValidationTests =
-    Test.describe "Validation.Test.*"
-        [ Test.describe "optional"
-            [ Test.test "validates just" <|
+    Test.describe "Validation.String.*"
+        [ let
+            validation =
+                Validation.String.optional <| Validation.String.toInt "Expected an int"
+          in
+          Test.describe "optional"
+            [ Test.test "returns Nothing when the string is empty" <|
                 \() ->
-                    Just " abc "
-                        |> Validation.run (Validation.Maybe.lift Validation.String.trim)
-                        |> Expect.equal (Ok (Just "abc"))
-            , Test.test "validates Nothiing" <|
-                \() ->
-                    Nothing
-                        |> Validation.run (Validation.Maybe.lift (Validation.fail "fail"))
+                    ""
+                        |> Validation.run validation
                         |> Expect.equal (Ok Nothing)
+            , Test.test "succeeds when the string is not empty and the validations succeeds" <|
+                \() ->
+                    "not-a-number"
+                        |> Validation.run validation
+                        |> Expect.equal (Err "Expected an int")
+            , Test.test "fails when the string is not empty and the validations succeeds" <|
+                \() ->
+                    "24"
+                        |> Validation.run validation
+                        |> Expect.equal (Ok (Just 24))
             ]
-        , Test.describe "Validation.String.toInt"
+        , Test.describe "toInt"
             [ Test.fuzz Fuzz.int "Should parse number" <|
                 \n ->
                     n
