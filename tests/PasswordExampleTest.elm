@@ -2,7 +2,7 @@ module PasswordExampleTest exposing (..)
 
 import Expect
 import Test exposing (Test)
-import Validation exposing (Validation)
+import Validation
 import Validation.Password
 
 

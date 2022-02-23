@@ -1,6 +1,5 @@
 module Validation.Password exposing
     ( Password
-    , confirmPasswordValidation
     , fromString
     , toString
     )
@@ -27,12 +26,6 @@ fromString raw =
         |> Validation.String.any Char.isDigit "The password should have at least one numberic character"
         |> Validation.String.minLength 8 "The password should have at least 8 characters"
         |> Result.map Password
-
-
-confirmPasswordValidation : Maybe Password -> Maybe (Validation Password Password)
-confirmPasswordValidation =
-    Maybe.map
-        (\pw -> Validation.filter ((==) pw) "Passwords do not match")
 
 
 toString : Password -> String
